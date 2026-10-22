@@ -1,0 +1,20 @@
+<div class="campo{% if field.errors %} campo-error{% endif %}">
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    <div class="entrada{% if icono %} con-icono{% endif %}{% if clave %} con-ojo{% endif %}">
+        {% if icono %}
+            <span class="entrada-icono">{% include "cuentas/_icono.html" with nombre=icono %}</span>
+        {% endif %}
+        {{ field }}
+        {% if clave %}
+            <button type="button" class="ver-clave" data-ver-clave="{{ field.id_for_label }}" aria-label="Mostrar u ocultar contraseña">
+                {% include "cuentas/_icono.html" with nombre="ojo" %}
+            </button>
+        {% endif %}
+    </div>
+    {% for error in field.errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+    {% if field.help_text %}
+        <p class="ayuda">{{ field.help_text }}</p>
+    {% endif %}
+</div>

@@ -1,0 +1,37 @@
+{% extends "cuentas/base_cuentas.html" %}
+
+{% block titulo %}Mi cuenta{% endblock %}
+
+{% block contenido %}
+<div class="sesion">
+    <div class="avatar">
+        <span class="avatar-centro">🪗</span>
+        <span class="avatar-visto">{% include "cuentas/_icono.html" with nombre="visto" %}</span>
+    </div>
+
+    <div>
+        <span class="insignia">Sesión activa</span>
+        <h2 class="sesion-nombre">{{ user.get_full_name|default:user.username }}</h2>
+        <p class="sesion-detalle">@{{ user.username }}{% if user.email %} · {{ user.email }}{% endif %}</p>
+    </div>
+
+    <div class="dos-columnas datos-sesion">
+        <div class="dato">
+            <span class="dato-titulo">{% include "cuentas/_icono.html" with nombre="calendario" %} Miembro desde</span>
+            <strong>{{ user.date_joined|date:"j \d\e F \d\e Y"|lower }}</strong>
+        </div>
+        <div class="dato">
+            <span class="dato-titulo">{% include "cuentas/_icono.html" with nombre="reloj" %} Último ingreso</span>
+            <strong>{{ user.last_login|date:"j \d\e F, g:i a"|lower }}</strong>
+        </div>
+    </div>
+
+    <form method="post" action="{% url 'cuentas:logout' %}" class="ancho-completo">
+        {% csrf_token %}
+        <button type="submit" class="boton-salir">
+            {% include "cuentas/_icono.html" with nombre="salir" %}
+            <span>Cerrar sesión</span>
+        </button>
+    </form>
+</div>
+{% endblock %}

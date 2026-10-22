@@ -86,6 +86,7 @@ Abre http://127.0.0.1:8000/admin/ e inicia sesión con el usuario del paso 9.
 - `votaciones/models.py`: modelos Edicion, Categoria, Votacion y Opcion
 - `votaciones/admin.py`: registro de los modelos en Django Admin
 - `votaciones/fixtures/datos_iniciales.json`: datos de prueba
+- `cuentas/`: registro, inicio y cierre de sesión (`/cuentas/registro/`, `/cuentas/iniciar-sesion/`, `/cuentas/perfil/`). Pruebas: `python manage.py test cuentas`
 - `requirements.txt`: dependencias de Python
 
 ## Problemas frecuentes

@@ -1,0 +1,28 @@
+{% extends "cuentas/base_cuentas.html" %}
+
+{% block titulo %}Iniciar sesión{% endblock %}
+
+{% block contenido %}
+{% include "cuentas/_pestanas.html" with activa="login" %}
+
+<form method="post" novalidate class="formulario">
+    {% csrf_token %}
+    {% for error in form.non_field_errors %}
+        <p class="error-general">{{ error }}</p>
+    {% endfor %}
+
+    {% include "cuentas/_campo.html" with field=form.username icono="carnet" %}
+    {% include "cuentas/_campo.html" with field=form.password icono="candado" clave=True %}
+
+    <label class="casilla">
+        <input type="checkbox" name="recordarme"{% if request.POST.recordarme %} checked{% endif %}>
+        <span>Mantener sesión iniciada</span>
+    </label>
+
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="boton-dorado">
+        {% include "cuentas/_icono.html" with nombre="entrar" %}
+        <span>Entrar</span>
+    </button>
+</form>
+{% endblock %}

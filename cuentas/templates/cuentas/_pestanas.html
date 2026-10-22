@@ -1,0 +1,10 @@
+<nav class="pestanas">
+    <a href="{% url 'cuentas:login' %}" class="pestana{% if activa == 'login' %} activa{% endif %}"{% if activa == 'login' %} aria-current="page"{% endif %}>
+        {% include "cuentas/_icono.html" with nombre="entrar" %}
+        <span>Iniciar sesión</span>
+    </a>
+    <a href="{% url 'cuentas:registro' %}" class="pestana{% if activa == 'registro' %} activa{% endif %}"{% if activa == 'registro' %} aria-current="page"{% endif %}>
+        {% include "cuentas/_icono.html" with nombre="usuario-mas" %}
+        <span>Registrarse como votante</span>
+    </a>
+</nav>

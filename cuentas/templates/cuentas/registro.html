@@ -1,0 +1,40 @@
+{% extends "cuentas/base_cuentas.html" %}
+
+{% block titulo %}Crear cuenta{% endblock %}
+
+{% block contenido %}
+{% include "cuentas/_pestanas.html" with activa="registro" %}
+
+<form method="post" novalidate class="formulario">
+    {% csrf_token %}
+    {% for error in form.non_field_errors %}
+        <p class="error-general">{{ error }}</p>
+    {% endfor %}
+
+    <div class="dos-columnas">
+        {% include "cuentas/_campo.html" with field=form.first_name icono="usuario" %}
+        {% include "cuentas/_campo.html" with field=form.last_name icono="usuario" %}
+    </div>
+    {% include "cuentas/_campo.html" with field=form.username icono="carnet" %}
+    {% include "cuentas/_campo.html" with field=form.email icono="correo" %}
+    <div class="dos-columnas">
+        {% include "cuentas/_campo.html" with field=form.password1 icono="candado" clave=True %}
+        {% include "cuentas/_campo.html" with field=form.password2 icono="candado" clave=True %}
+    </div>
+
+    <div class="campo{% if form.acepta_reglamento.errors %} campo-error{% endif %}">
+        <label class="casilla" for="{{ form.acepta_reglamento.id_for_label }}">
+            {{ form.acepta_reglamento }}
+            <span>{{ form.acepta_reglamento.label }}</span>
+        </label>
+        {% for error in form.acepta_reglamento.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="boton-dorado boton-naranja">
+        {% include "cuentas/_icono.html" with nombre="visto-circulo" %}
+        <span>Completar registro</span>
+    </button>
+</form>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Cuentas{% endblock %} | Festival Vallenato 2027</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="{% static 'cuentas/css/cuentas.css' %}">
+    <script src="{% static 'cuentas/js/cuentas.js' %}" defer></script>
+</head>
+<body>
+    <header class="encabezado">
+        <div class="franja-vueltiao"></div>
+        <div class="encabezado-interior">
+            <div class="marca">
+                <div class="logo">
+                    <span class="logo-centro">{% include "cuentas/_icono.html" with nombre="musica" %}</span>
+                </div>
+                <div>
+                    <span class="marca-lugar">Valledupar • Colombia</span>
+                    <span class="marca-nombre">Festival de la <span class="texto-dorado">Leyenda Vallenata</span></span>
+                </div>
+            </div>
+
+            <nav class="encabezado-nav">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'cuentas:perfil' %}" class="chip">
+                        {% include "cuentas/_icono.html" with nombre="usuario" %}
+                        <span>{{ user.username }}</span>
+                    </a>
+                    <form method="post" action="{% url 'cuentas:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="boton-contorno" aria-label="Cerrar sesión">
+                            {% include "cuentas/_icono.html" with nombre="salir" %}
+                            <span class="solo-ancho">Cerrar sesión</span>
+                        </button>
+                    </form>
+                {% else %}
+                    <span class="chip solo-ancho">
+                        <span class="punto"></span>
+                        Edición 2027
+                    </span>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="escenario">
+        <div class="luz luz-1"></div>
+        <div class="luz luz-2"></div>
+        <div class="luz luz-3"></div>
+        <div class="notas" aria-hidden="true">
+            <span>🪗</span><span>🎵</span><span>🎶</span><span>👑</span>
+        </div>
+
+        <div class="escenario-grid">
+            <section class="presentacion">
+                <span class="insignia-edicion">
+                    {% include "cuentas/_icono.html" with nombre="premio" %}
+                    Edición 2027 • Rey Vallenato
+                </span>
+                <h1 class="presentacion-titulo">
+                    ¡Tu voto corona al nuevo <span class="texto-degradado">Rey del Acordeón</span>!
+                </h1>
+                <p class="presentacion-texto">
+                    Entra a la tarima digital y apoya a los mejores juglares de la
+                    <strong>Piquería</strong>, la <strong>Canción Inédita</strong> y el
+                    <strong>Acordeón Profesional</strong>.
+                </p>
+                <div class="instrumentos">
+                    <div class="instrumento"><span>🪗</span><strong>Acordeón</strong><small>Melodía</small></div>
+                    <div class="instrumento"><span>🥁</span><strong>Caja</strong><small>Ritmo</small></div>
+                    <div class="instrumento"><span>🎋</span><strong>Guacharaca</strong><small>Sabor</small></div>
+                </div>
+            </section>
+
+            <section class="tarjeta">
+                <div class="tarjeta-franja"></div>
+
+                {% if messages %}
+                    <div class="mensajes">
+                        {% for message in messages %}
+                            <div class="mensaje mensaje-{{ message.level_tag }}" role="status">
+                                {% if message.level_tag == "success" %}
+                                    {% include "cuentas/_icono.html" with nombre="visto-circulo" %}
+                                {% elif message.level_tag == "error" or message.level_tag == "warning" %}
+                                    {% include "cuentas/_icono.html" with nombre="alerta" %}
+                                {% else %}
+                                    {% include "cuentas/_icono.html" with nombre="info" %}
+                                {% endif %}
+                                <span>{{ message }}</span>
+                                <button type="button" class="mensaje-cerrar" aria-label="Cerrar mensaje">
+                                    {% include "cuentas/_icono.html" with nombre="cerrar" %}
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% block contenido %}{% endblock %}
+            </section>
+        </div>
+    </main>
+
+    <footer class="pie">
+        <div class="pie-interior">
+            <span>Festival de la Leyenda Vallenata 2027 · Proyecto académico, Fundación Universitaria del Área Andina</span>
+            <span class="pie-lugar">Valledupar, Cesar · Capital mundial del vallenato</span>
+        </div>
+    </footer>
+</body>
+</html>
