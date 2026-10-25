@@ -1,0 +1,28 @@
+{% extends "votaciones/base.html" %}
+{% block titulo %}{{ edicion }} · Categorías{% endblock %}
+{% block contenido %}
+
+<a class="volver" href="{% url 'ediciones' %}">‹ Volver</a>
+<nav class="migas">
+  <a href="{% url 'inicio' %}">Inicio</a> ›
+  <a href="{% url 'ediciones' %}">Ediciones</a> ›
+  <strong>{{ edicion }}</strong>
+</nav>
+<h1 class="titulo-pagina">Categorías · {{ edicion }}</h1>
+
+<div class="rejilla">
+  {% for c in categorias %}
+    <a class="tarjeta" href="{% url 'categoria_detalle' c.pk %}">
+      <span class="inicial">{{ c.nombre|first|upper }}</span>
+      <span class="tarjeta__cuerpo">
+        <strong>{{ c.nombre }}</strong>
+        <small>{{ c.total_votaciones }} {% if c.total_votaciones == 1 %}votación{% else %}votaciones{% endif %}</small>
+      </span>
+      <span class="insignia insignia--{{ c.estado_clave }}">{{ c.estado_texto }}</span>
+    </a>
+  {% empty %}
+    <p class="vacio">Esta edición aún no tiene categorías.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

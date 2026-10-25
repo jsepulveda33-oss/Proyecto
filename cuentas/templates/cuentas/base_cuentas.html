@@ -14,7 +14,7 @@
     <header class="encabezado">
         <div class="franja-vueltiao"></div>
         <div class="encabezado-interior">
-            <div class="marca">
+            <a class="marca" href="{% url 'inicio' %}">
                 <div class="logo">
                     <span class="logo-centro">{% include "cuentas/_icono.html" with nombre="musica" %}</span>
                 </div>
@@ -22,7 +22,7 @@
                     <span class="marca-lugar">Valledupar • Colombia</span>
                     <span class="marca-nombre">Festival de la <span class="texto-dorado">Leyenda Vallenata</span></span>
                 </div>
-            </div>
+            </a>
 
             <nav class="encabezado-nav">
                 {% if user.is_authenticated %}
@@ -45,6 +45,14 @@
                 {% endif %}
             </nav>
         </div>
+
+        {# Navegación entre páginas (Persona 3) #}
+        <nav class="subnav" aria-label="Navegación principal">
+            <div class="subnav-interior">
+                <a href="{% url 'inicio' %}">Inicio</a>
+                <a href="{% url 'ediciones' %}">Ediciones</a>
+            </div>
+        </nav>
     </header>
 
     <main class="escenario">

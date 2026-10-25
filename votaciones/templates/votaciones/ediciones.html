@@ -1,0 +1,24 @@
+{% extends "votaciones/base.html" %}
+{% block titulo %}Ediciones · Festival Vallenato{% endblock %}
+{% block contenido %}
+
+<a class="volver" href="{% url 'inicio' %}">‹ Volver</a>
+<nav class="migas"><a href="{% url 'inicio' %}">Inicio</a> › <strong>Ediciones</strong></nav>
+<h1 class="titulo-pagina">Ediciones disponibles</h1>
+
+<div class="rejilla">
+  {% for e in ediciones %}
+    <a class="tarjeta" href="{% url 'edicion_detalle' e.pk %}">
+      <span class="inicial">{{ e.nombre|first|upper }}</span>
+      <span class="tarjeta__cuerpo">
+        <strong>{{ e.nombre }} ({{ e.anio }})</strong>
+        <small>{{ e.total_categorias }} categoría{{ e.total_categorias|pluralize:"s" }}</small>
+      </span>
+      {% if e.activa %}<span class="insignia insignia--activa">Activa</span>{% else %}<span class="insignia insignia--cerrada">Inactiva</span>{% endif %}
+    </a>
+  {% empty %}
+    <p class="vacio">No hay ediciones registradas todavía.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

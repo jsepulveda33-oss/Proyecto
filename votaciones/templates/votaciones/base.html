@@ -1,0 +1,83 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Festival de la Leyenda Vallenata 2027{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'votaciones/css/estilos.css' %}">
+</head>
+<body>
+
+  <header class="encabezado">
+    <div class="franja-vueltiao"></div>
+    <div class="encabezado-interior">
+      <a class="marca" href="{% url 'inicio' %}">
+        <div class="logo">
+          <span class="logo-centro">{% include "cuentas/_icono.html" with nombre="musica" %}</span>
+        </div>
+        <div>
+          <span class="marca-lugar">Valledupar • Colombia</span>
+          <span class="marca-nombre">Festival de la <span class="texto-dorado">Leyenda Vallenata</span></span>
+        </div>
+      </a>
+
+      <nav class="encabezado-nav">
+        {% if user.is_authenticated %}
+          <a href="{% url 'cuentas:perfil' %}" class="chip">
+            {% include "cuentas/_icono.html" with nombre="usuario" %}
+            <span>{{ user.username }}</span>
+          </a>
+          <form method="post" action="{% url 'cuentas:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="boton-contorno" aria-label="Cerrar sesión">
+              {% include "cuentas/_icono.html" with nombre="salir" %}
+              <span class="solo-ancho">Cerrar sesión</span>
+            </button>
+          </form>
+        {% else %}
+          <a href="{% url 'cuentas:login' %}" class="chip" aria-label="Iniciar sesión">
+            {% include "cuentas/_icono.html" with nombre="entrar" %}
+            <span class="solo-ancho">Iniciar sesión</span>
+          </a>
+          <a href="{% url 'cuentas:registro' %}" class="chip chip--oro" aria-label="Registrarse">
+            {% include "cuentas/_icono.html" with nombre="usuario-mas" %}
+            <span class="solo-ancho">Registrarse</span>
+          </a>
+        {% endif %}
+      </nav>
+    </div>
+
+    <!-- Navegación entre páginas: la opción activa se resalta según la URL actual -->
+    {% with pagina=request.resolver_match.url_name %}
+    <nav class="subnav" aria-label="Navegación principal">
+      <div class="subnav-interior">
+        <a href="{% url 'inicio' %}"{% if pagina == 'inicio' %} class="activa" aria-current="page"{% endif %}>Inicio</a>
+        <a href="{% url 'ediciones' %}"{% if pagina == 'ediciones' or pagina == 'edicion_detalle' or pagina == 'categoria_detalle' or pagina == 'votacion_detalle' %} class="activa"{% endif %}>Ediciones</a>
+      </div>
+    </nav>
+    {% endwith %}
+  </header>
+
+  <main class="contenedor principal">
+    {% if messages %}
+      <ul class="mensajes">
+        {% for mensaje in messages %}
+          <li class="mensaje mensaje--{{ mensaje.tags }}">{{ mensaje }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% block contenido %}{% endblock %}
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      Festival de la Leyenda Vallenata 2027 · Sistema de votaciones · Proyecto académico, Área Andina
+    </div>
+  </footer>
+
+</body>
+</html>

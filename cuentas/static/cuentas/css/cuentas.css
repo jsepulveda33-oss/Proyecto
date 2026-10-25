@@ -945,3 +945,38 @@ a.chip:hover {
         animation: none;
     }
 }
+
+
+/* ---------- Navegación entre páginas ---------- */
+a.marca {
+    color: inherit;
+    text-decoration: none;
+}
+
+.subnav {
+    border-top: 1px solid rgba(120, 53, 15, 0.3);
+    background: rgba(10, 10, 10, 0.6);
+}
+
+.subnav-interior {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 12px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+}
+
+.subnav a {
+    padding: 10px 14px;
+    border-bottom: 2px solid transparent;
+    color: var(--texto-tenue);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.subnav a:hover {
+    color: #fff;
+}

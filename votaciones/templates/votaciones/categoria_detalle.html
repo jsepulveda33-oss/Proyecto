@@ -1,0 +1,30 @@
+{% extends "votaciones/base.html" %}
+{% block titulo %}{{ categoria.nombre }} · Votaciones{% endblock %}
+{% block contenido %}
+
+<a class="volver" href="{% url 'edicion_detalle' edicion.pk %}">‹ Volver</a>
+<nav class="migas">
+  <a href="{% url 'inicio' %}">Inicio</a> ›
+  <a href="{% url 'edicion_detalle' edicion.pk %}">{{ edicion }}</a> ›
+  <strong>{{ categoria.nombre }}</strong>
+</nav>
+<h1 class="titulo-pagina">{{ categoria.nombre }}</h1>
+{% if categoria.descripcion %}<p class="subtitulo">{{ categoria.descripcion }}</p>{% endif %}
+
+<h2 class="titulo-seccion">Votaciones de la categoría</h2>
+<div class="rejilla">
+  {% for v in votaciones %}
+    <a class="tarjeta" href="{% url 'votacion_detalle' v.pk %}">
+      <span class="inicial">{{ v.nombre|first|upper }}</span>
+      <span class="tarjeta__cuerpo">
+        <strong>{{ v.nombre }}</strong>
+        <small>{{ v.total_opciones }} {% if v.total_opciones == 1 %}opción{% else %}opciones{% endif %}</small>
+      </span>
+      <span class="insignia insignia--{{ v.estado_clave }}">{{ v.estado_texto }}</span>
+    </a>
+  {% empty %}
+    <p class="vacio">Esta categoría aún no tiene votaciones.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

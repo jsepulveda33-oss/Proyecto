@@ -1,0 +1,47 @@
+{% extends "votaciones/base.html" %}
+{% block contenido %}
+
+<section class="heroe">
+  <p class="etiqueta">Valledupar · Cesar</p>
+  <h1>Festival de la Leyenda Vallenata <span class="oro">2027</span></h1>
+  <p class="heroe__texto">
+    Consulta las ediciones, las categorías, las votaciones y las opciones participantes del Festival.
+  </p>
+  <div class="heroe__acciones">
+    <a class="boton boton--oro" href="{% url 'ediciones' %}">Ver ediciones</a>
+    {% if edicion %}
+      <a class="boton boton--borde" href="{% url 'edicion_detalle' edicion.pk %}">Categorías de {{ edicion.anio }}</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="cifras" aria-label="Resumen del sistema">
+  <div class="cifra"><strong>{{ total_ediciones }}</strong><span>Ediciones</span></div>
+  <div class="cifra"><strong>{{ total_categorias }}</strong><span>Categorías</span></div>
+  <div class="cifra"><strong>{{ total_votaciones }}</strong><span>Votaciones</span></div>
+  <div class="cifra"><strong>{{ total_opciones }}</strong><span>Opciones</span></div>
+</section>
+
+{% if edicion %}
+  <section>
+    <h2 class="titulo-seccion">Categorías · {{ edicion }}</h2>
+    <div class="rejilla">
+      {% for c in categorias %}
+        <a class="tarjeta" href="{% url 'categoria_detalle' c.pk %}">
+          <span class="inicial">{{ c.nombre|first|upper }}</span>
+          <span class="tarjeta__cuerpo">
+            <strong>{{ c.nombre }}</strong>
+            <small>{{ c.total_votaciones }} {% if c.total_votaciones == 1 %}votación{% else %}votaciones{% endif %}</small>
+          </span>
+          <span class="insignia insignia--{{ c.estado_clave }}">{{ c.estado_texto }}</span>
+        </a>
+      {% empty %}
+        <p class="vacio">Esta edición aún no tiene categorías registradas.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% else %}
+  <p class="vacio">Aún no hay ediciones registradas. Agrégalas desde el panel de administración.</p>
+{% endif %}
+
+{% endblock %}

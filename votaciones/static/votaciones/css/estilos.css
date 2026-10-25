@@ -1,0 +1,235 @@
+/* ==========================================================
+   Festival de la Leyenda Vallenata 2027 · Interfaz pública
+   Diseño "móvil primero": los estilos base son para celular
+   y los @media (min-width) amplían el diseño en tablet y PC.
+   ========================================================== */
+
+:root {
+  --fondo: #130c06;
+  --fondo-2: #1d130a;
+  --tarjeta: #24170c;
+  --borde: #4a3315;
+  --texto: #f3e6d0;
+  --texto-suave: #c4ad8a;
+  --oro: #fbbf24;
+  --naranja: #f59e0b;
+  --verde: #34d399;
+  --radio: 14px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at top, var(--fondo-2), var(--fondo) 60%);
+  color: var(--texto);
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+a { color: var(--oro); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1, h2 {
+  font-family: "Cinzel", Georgia, serif;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.contenedor { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.principal { flex: 1; padding-top: 24px; padding-bottom: 40px; }
+
+/* ---------- Cabecera (igual a la de la app cuentas) ---------- */
+.icono { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+.texto-dorado {
+  background: linear-gradient(90deg, #fbbf24, #fde68a, #eab308);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.encabezado {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(23, 23, 23, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(120, 53, 15, 0.4);
+}
+/* Borde inspirado en el tejido del sombrero vueltiao */
+.franja-vueltiao {
+  height: 6px;
+  background-image: repeating-linear-gradient(45deg, #f59e0b 0 8px, #1c1917 8px 16px, #ffffff 16px 24px, #1c1917 24px 32px);
+}
+.encabezado-interior {
+  max-width: 1280px; height: 80px; margin: 0 auto; padding: 0 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.marca { display: flex; align-items: center; gap: 12px; min-width: 0; color: inherit; text-decoration: none; }
+.marca:hover { text-decoration: none; }
+.logo {
+  width: 48px; height: 48px; flex-shrink: 0; padding: 2px; border-radius: 50%;
+  background: linear-gradient(45deg, #d97706, #facc15, #b45309);
+  box-shadow: 0 10px 15px rgba(217, 119, 6, 0.2);
+}
+.logo-centro {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: #0a0a0a; color: #fbbf24;
+}
+.marca-lugar { display: block; color: #f59e0b; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; }
+.marca-nombre { display: block; color: #fff; font-family: "Cinzel", Georgia, serif; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.02em; line-height: 1.2; }
+.encabezado-nav { display: flex; align-items: center; gap: 10px; }
+.encabezado-nav form { margin: 0; }
+.chip {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
+  border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 999px;
+  background: rgba(69, 26, 3, 0.6); color: #fde68a;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-decoration: none; text-transform: uppercase;
+}
+.chip .icono { width: 1rem; height: 1rem; }
+a.chip:hover { background: rgba(69, 26, 3, 0.9); text-decoration: none; }
+.chip--oro { background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #1c0f02; border-color: transparent; }
+a.chip--oro:hover { background: linear-gradient(90deg, #fcd34d, #fbbf24); }
+.boton-contorno {
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px;
+  border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 10px; background: transparent;
+  color: #fca5a5; font: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+}
+.boton-contorno:hover { background: rgba(239, 68, 68, 0.1); }
+
+/* Barra de navegación entre páginas */
+.subnav { border-top: 1px solid rgba(120, 53, 15, 0.3); background: rgba(10, 10, 10, 0.6); }
+.subnav-interior { max-width: 1280px; margin: 0 auto; padding: 0 12px; display: flex; gap: 4px; overflow-x: auto; }
+.subnav a {
+  padding: 10px 14px; color: #a3a3a3; font-size: 0.85rem; font-weight: 600;
+  text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent;
+}
+.subnav a:hover { color: #fff; text-decoration: none; }
+.subnav a.activa { color: #fbbf24; border-bottom-color: #f59e0b; }
+
+/* ---------- Botones ---------- */
+.boton {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-align: center;
+}
+.boton:hover { text-decoration: none; filter: brightness(1.08); }
+.boton--oro { background: linear-gradient(90deg, var(--oro), var(--naranja)); color: #2a1503; }
+.boton--borde { background: transparent; color: var(--oro); border-color: var(--naranja); }
+
+/* ---------- Héroe de la página de inicio ---------- */
+.heroe { padding: 32px 0 24px; text-align: center; }
+.heroe h1 { font-size: 1.9rem; line-height: 1.2; margin: 8px 0 12px; }
+.oro { color: var(--oro); }
+.etiqueta { color: var(--naranja); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.18em; margin: 0; font-weight: 700; }
+.heroe__texto { color: var(--texto-suave); max-width: 560px; margin: 0 auto 20px; }
+.heroe__acciones { display: flex; flex-direction: column; gap: 10px; max-width: 360px; margin: 0 auto; }
+
+/* ---------- Cifras ---------- */
+.cifras { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 8px 0 32px; }
+.cifra {
+  background: var(--tarjeta); border: 1px solid var(--borde); border-radius: var(--radio);
+  padding: 14px; display: flex; flex-direction: column;
+}
+.cifra strong { font-family: "Cinzel", serif; font-size: 1.8rem; color: var(--oro); }
+.cifra span { color: var(--texto-suave); font-size: 0.85rem; }
+
+/* ---------- Títulos y textos ---------- */
+.titulo-pagina { font-size: 1.6rem; color: var(--oro); margin: 8px 0 8px; }
+.titulo-seccion { font-size: 1.15rem; color: var(--oro); margin: 24px 0 14px; }
+.subtitulo { color: var(--texto-suave); margin: 0 0 8px; }
+.migas { font-size: 0.85rem; color: var(--texto-suave); }
+.migas strong { color: var(--texto); }
+
+/* ---------- Botón "Volver" (útil sobre todo en celular) ---------- */
+.volver {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-bottom: 10px; padding: 8px 16px;
+  border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 999px;
+  background: rgba(69, 26, 3, 0.6); color: #fde68a;
+  font-size: 0.85rem; font-weight: 700;
+}
+.volver:hover { background: rgba(69, 26, 3, 0.9); text-decoration: none; }
+
+/* ---------- Tarjetas ---------- */
+.rejilla { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.tarjeta {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--tarjeta); border: 1px solid var(--borde); border-radius: var(--radio);
+  padding: 14px; color: var(--texto);
+  transition: border-color 0.15s, transform 0.15s;
+}
+a.tarjeta:hover { border-color: var(--naranja); transform: translateY(-2px); text-decoration: none; }
+.tarjeta--fija { cursor: default; }
+.tarjeta__cuerpo { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.tarjeta__cuerpo small { color: var(--texto-suave); }
+.inicial {
+  flex: none; display: grid; place-items: center;
+  width: 42px; height: 42px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--naranja), #ea580c);
+  color: #fff; font-family: "Cinzel", serif; font-weight: 700;
+}
+.flecha { color: var(--oro); font-size: 1.5rem; }
+
+/* ---------- Insignias de estado ---------- */
+.insignia {
+  display: inline-block; flex: none;
+  padding: 2px 10px; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 700;
+  background: #3a2a14; color: var(--texto-suave);
+}
+.insignia--activa { background: #0f3a2b; color: var(--verde); }
+.insignia--proxima { background: #4a3708; color: var(--oro); }
+.insignia--cerrada, .insignia--vacia, .insignia--inactiva { background: #3a2a14; color: var(--texto-suave); }
+
+/* ---------- Panel de detalle de votación ---------- */
+.panel { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: var(--radio); padding: 18px; margin-top: 12px; }
+.datos { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 16px 0 0; }
+.datos div { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--borde); padding-top: 8px; }
+.datos dt { color: var(--texto-suave); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.08em; }
+.datos dd { margin: 0; font-weight: 700; }
+
+/* ---------- Avisos, vacíos y mensajes ---------- */
+.aviso { background: #3a2a0a; border: 1px solid #6b4a0e; color: var(--oro); border-radius: 10px; padding: 10px 14px; margin-top: 24px; font-size: 0.9rem; }
+.vacio { color: var(--texto-suave); font-style: italic; grid-column: 1 / -1; }
+.mensajes { list-style: none; padding: 0; margin: 0 0 16px; }
+.mensaje { padding: 10px 14px; border-radius: 10px; margin-bottom: 8px; background: #0f3a2b; color: var(--verde); }
+.mensaje--error { background: #4a1414; color: #fca5a5; }
+
+/* ---------- Pie ---------- */
+.pie { border-top: 1px solid var(--borde); padding: 16px 0; color: var(--texto-suave); font-size: 0.8rem; text-align: center; }
+
+/* ==========================================================
+   Tablet (≥ 640px)
+   ========================================================== */
+@media (min-width: 640px) {
+  .heroe h1 { font-size: 2.6rem; }
+  .heroe__acciones { flex-direction: row; justify-content: center; max-width: none; }
+  .cifras { grid-template-columns: repeat(4, 1fr); }
+  .rejilla { grid-template-columns: repeat(2, 1fr); }
+  .datos { grid-template-columns: repeat(3, 1fr); }
+  .datos div { flex-direction: column; }
+}
+
+/* ==========================================================
+   Computador (≥ 900px)
+   ========================================================== */
+@media (min-width: 900px) {
+  .volver { display: none; } /* en computador basta el menú y las migas */
+  .rejilla { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ---------- Cabecera: pantallas pequeñas ---------- */
+@media (max-width: 639px) {
+  .solo-ancho, .marca-lugar { display: none; }
+  .logo { width: 40px; height: 40px; }
+  .marca-nombre { font-size: 0.85rem; }
+  .chip { padding: 6px 10px; }
+}
+@media (min-width: 640px) {
+  .encabezado-interior { padding: 0 24px; }
+  .marca-nombre { font-size: 1.2rem; }
+}
