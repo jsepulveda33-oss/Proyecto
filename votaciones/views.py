@@ -1,23 +1,21 @@
 
-
-from django.db.models import Count
-from django.shortcuts import get_object_or_404, render
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError, transaction
+from django.db.models import Count, F
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from .models import Categoria, Edicion, Opcion, Votacion
+from .forms import VotoForm
+from .models import Categoria, Edicion, Opcion, Voto, Votacion
 
 
 # ---------------------------------------------------------------------------
 # Funciones de apoyo
 # ---------------------------------------------------------------------------
 def calcular_estado(votacion):
-    """
-    Devuelve (clave, texto) con el estado de una votación:
-      - Inactiva: el administrador la desactivó (campo 'activa' = False).
-      - Próxima:  todavía no llega la fecha de inicio.
-      - Cerrada:  ya pasó la fecha de fin.
-      - Activa:   está dentro de su ventana de tiempo (regla RN-03).
-    """
+
+   
     if not votacion.activa:
         return "inactiva", "Inactiva"
     ahora = timezone.now()
@@ -29,10 +27,8 @@ def calcular_estado(votacion):
 
 
 def _preparar_categorias(categorias):
-    """
-    Agrega a cada categoría cuántas votaciones tiene y un resumen de su estado.
-    Usa prefetch_related para traer todas las votaciones en una sola consulta.
-    """
+
+ 
     lista = list(categorias.prefetch_related("votaciones"))
     for c in lista:
         estados = [calcular_estado(v)[0] for v in c.votaciones.all()]
@@ -107,13 +103,69 @@ def detalle_votacion(request, votacion_id):
         Votacion.objects.select_related("categoria__edicion"), pk=votacion_id
     )
     votacion.estado_clave, votacion.estado_texto = calcular_estado(votacion)
+    voto_previo = None
+    if request.user.is_authenticated:
+        voto_previo = (
+            Voto.objects.filter(
+                usuario=request.user,
+                categoria=votacion.categoria,
+                edicion=votacion.categoria.edicion,
+            )
+            .select_related("opcion")
+            .first()
+        )
     return render(
         request,
         "votaciones/votacion_detalle.html",
         {
+            "voto_previo": voto_previo,
             "votacion": votacion,
             "categoria": votacion.categoria,
             "edicion": votacion.categoria.edicion,
             "opciones": list(votacion.opciones.all()),
         },
     )
+
+
+# ---------------------------------------------------------------------------
+# Núcleo del voto (Compañero 1)
+# ---------------------------------------------------------------------------
+@login_required
+def votar(request, categoria_id):
+
+    
+    categoria = get_object_or_404(Categoria.objects.select_related("edicion"), pk=categoria_id)
+
+    if request.method != "POST":
+        # Evita el 405 al volver del login: se muestra la categoría.
+        return redirect("categoria_detalle", categoria_id=categoria.pk)
+
+    # Página a la que se regresa (la votación desde la que se votó, si es de esta categoría).
+    destino = redirect("categoria_detalle", categoria_id=categoria.pk)
+    votacion_id = request.POST.get("votacion", "")
+    if votacion_id.isdigit() and categoria.votaciones.filter(pk=votacion_id).exists():
+        destino = redirect("votacion_detalle", votacion_id=int(votacion_id))
+
+    form = VotoForm(request.POST, categoria=categoria, usuario=request.user)
+    if not form.is_valid():
+        for errores in form.errors.values():
+            for error in errores:
+                messages.error(request, error)
+        return destino
+
+    opcion = form.cleaned_data["opcion"]
+    try:
+        with transaction.atomic():
+            Voto.objects.create(
+                usuario=request.user,
+                edicion=categoria.edicion,
+                categoria=categoria,
+                opcion=opcion,
+            )
+            # Incremento atómico en la BD (evita perder votos por concurrencia).
+            Opcion.objects.filter(pk=opcion.pk).update(votos=F("votos") + 1)
+    except IntegrityError:
+        messages.error(request, "Ya votaste en esta categoría.")
+    else:
+        messages.success(request, f"¡Voto registrado para «{opcion.nombre}»!")
+    return destino

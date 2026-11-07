@@ -2,13 +2,15 @@
 {% block titulo %}{{ votacion.nombre }} · Opciones{% endblock %}
 {% block contenido %}
 
-<a class="volver" href="{% url 'categoria_detalle' categoria.pk %}">‹ Volver</a>
-<nav class="migas">
-  <a href="{% url 'inicio' %}">Inicio</a> ›
-  <a href="{% url 'edicion_detalle' edicion.pk %}">{{ edicion }}</a> ›
-  <a href="{% url 'categoria_detalle' categoria.pk %}">{{ categoria.nombre }}</a> ›
-  <strong>{{ votacion.nombre }}</strong>
-</nav>
+<div class="fila-volver">
+  <a class="volver" href="{% url 'categoria_detalle' categoria.pk %}" aria-label="Volver" title="Volver">‹</a>
+  <nav class="migas">
+    <a href="{% url 'inicio' %}">Inicio</a> ›
+    <a href="{% url 'edicion_detalle' edicion.pk %}">{{ edicion }}</a> ›
+    <a href="{% url 'categoria_detalle' categoria.pk %}">{{ categoria.nombre }}</a> ›
+    <strong>{{ votacion.nombre }}</strong>
+  </nav>
+</div>
 
 <section class="panel">
   <span class="insignia insignia--{{ votacion.estado_clave }}">{{ votacion.estado_texto }}</span>
@@ -27,6 +29,20 @@
 </section>
 
 <h2 class="titulo-seccion">Opciones participantes</h2>
+
+{% if voto_previo %}
+  <p class="aviso">Tu voto en esta categoría: <strong>{{ voto_previo.opcion.nombre }}</strong>. Solo se permite un voto por categoría.</p>
+{% elif votacion.estado_clave != "activa" %}
+  <p class="aviso">Esta votación no está habilitada para votar ({{ votacion.estado_texto }}).</p>
+{% elif not user.is_authenticated %}
+  <p class="aviso"><a href="{% url 'cuentas:login' %}?next={{ request.path }}">Inicia sesión</a> para votar.</p>
+{% endif %}
+
+{% if votacion.estado_clave == "activa" and user.is_authenticated and not voto_previo %}
+<form method="post" action="{% url 'votar' categoria.pk %}">
+  {% csrf_token %}
+  <input type="hidden" name="votacion" value="{{ votacion.pk }}">
+{% endif %}
 <div class="rejilla">
   {% for o in opciones %}
     <article class="tarjeta tarjeta--fija">
@@ -35,14 +51,16 @@
         <strong>{{ o.nombre }}</strong>
         {% if o.descripcion %}<small>{{ o.descripcion }}</small>{% endif %}
       </span>
+      {% if votacion.estado_clave == "activa" and user.is_authenticated and not voto_previo %}
+        <button type="submit" name="opcion" value="{{ o.pk }}" class="boton">Votar</button>
+      {% endif %}
     </article>
   {% empty %}
     <p class="vacio">Esta votación aún no tiene opciones.</p>
   {% endfor %}
 </div>
-
-<p class="aviso">
-  El registro del voto se habilitará en la siguiente entrega. Por ahora puedes consultar las opciones participantes.
-</p>
+{% if votacion.estado_clave == "activa" and user.is_authenticated and not voto_previo %}
+</form>
+{% endif %}
 
 {% endblock %}
