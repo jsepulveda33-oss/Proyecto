@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction
 from django.db.models import Count, F
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -156,16 +158,54 @@ def votar(request, categoria_id):
     opcion = form.cleaned_data["opcion"]
     try:
         with transaction.atomic():
+            # 1) Primero se bloquea y se actualiza la fila de la opción.
+            Opcion.objects.filter(pk=opcion.pk).update(votos=F("votos") + 1)
+            # 2) Después se crea el voto. Si el usuario ya votó, salta
+            #    IntegrityError y todo se revierte, incluido el contador.
             Voto.objects.create(
                 usuario=request.user,
                 edicion=categoria.edicion,
                 categoria=categoria,
                 opcion=opcion,
             )
-            # Incremento atómico en la BD (evita perder votos por concurrencia).
-            Opcion.objects.filter(pk=opcion.pk).update(votos=F("votos") + 1)
     except IntegrityError:
         messages.error(request, "Ya votaste en esta categoría.")
     else:
         messages.success(request, f"¡Voto registrado para «{opcion.nombre}»!")
     return destino
+
+@require_GET
+def api_categorias(request):
+    """GET /api/categorias/ -> categorías con sus opciones, leídas desde MySQL."""
+    categorias = (
+        Categoria.objects
+        .select_related("edicion")
+        .prefetch_related("votaciones__opciones")
+    )
+    data = []
+    for c in categorias:
+        opciones = []
+        for v in c.votaciones.all():
+            for o in v.opciones.all():
+                opciones.append({
+                    "id": o.id,
+                    "nombre": o.nombre,
+                    "descripcion": o.descripcion,
+                    "votos": o.votos,
+                    "votacion_id": v.id,
+                })
+        data.append({
+            "id": c.id,
+            "nombre": c.nombre,
+            "descripcion": c.descripcion,
+            "edicion": {
+                "id": c.edicion_id,
+                "nombre": c.edicion.nombre,
+                "anio": c.edicion.anio,
+            },
+            "opciones": opciones,
+        })
+    return JsonResponse(
+        {"categorias": data},
+        json_dumps_params={"ensure_ascii": False},
+    ) 
