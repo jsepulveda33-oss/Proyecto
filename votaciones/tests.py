@@ -1,3 +1,4 @@
+
 from datetime import timedelta
 
 from django.contrib.auth import get_user_model
@@ -5,7 +6,6 @@ from django.db import IntegrityError, transaction
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
-
 
 from .models import Categoria, Edicion, Opcion, Voto, Votacion
 
@@ -90,20 +90,20 @@ class NucleoVotoTests(TestCase):
         self.op1.refresh_from_db()
         self.assertEqual(self.op1.votos, 1)
 
-    def test_cp02_requiere_login(self):
+    def test_cp04_requiere_login(self):
         r = Client().post(self.url1, {"opcion": self.op1.pk})
         self.assertEqual(r.status_code, 302)
         self.assertIn("login", r.url)
         self.assertEqual(Voto.objects.count(), 0)
 
-    def test_cp03_no_permite_votar_dos_veces(self):
+    def test_cp02_no_permite_votar_dos_veces(self):
         self.client.post(self.url1, {"opcion": self.op1.pk})
         self.client.post(self.url1, {"opcion": self.op1b.pk})
         self.assertEqual(Voto.objects.count(), 1)
         self.op1b.refresh_from_db()
         self.assertEqual(self.op1b.votos, 0)
 
-    def test_cp04_puede_votar_en_otra_categoria(self):
+    def test_cp03_puede_votar_en_otra_categoria(self):
         self.client.post(self.url1, {"opcion": self.op1.pk})
         self.client.post(reverse("votar", args=[self.cat2.pk]), {"opcion": self.op2.pk})
         self.assertEqual(Voto.objects.count(), 2)

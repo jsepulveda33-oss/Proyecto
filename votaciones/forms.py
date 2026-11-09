@@ -43,7 +43,7 @@ class VotoForm(forms.Form):
 
     def clean(self):
         cleaned = super().clean()
-        # Sin voto previo del usuario en la categoría y edición (CP-03).
+        # Sin voto previo del usuario en la categoría y edición (CP-02).
         if Voto.objects.filter(
             usuario=self.usuario,
             categoria=self.categoria,
