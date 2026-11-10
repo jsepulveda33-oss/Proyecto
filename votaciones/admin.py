@@ -43,7 +43,6 @@ class VotoAdmin(admin.ModelAdmin):
     list_display = ("usuario", "edicion", "categoria", "opcion", "fecha_voto")
     list_filter = ("edicion", "categoria")
     search_fields = ("usuario__username", "opcion__nombre")
-    date_hierarchy = "fecha_voto"
     readonly_fields = ("usuario", "edicion", "categoria", "opcion", "fecha_voto")
 
     def has_add_permission(self, request):
