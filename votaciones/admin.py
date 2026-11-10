@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Categoria, Edicion, Opcion, Votacion
+from .models import Categoria, Edicion, Opcion, Voto, Votacion
 
 
 @admin.register(Edicion)
@@ -35,4 +35,16 @@ class OpcionAdmin(admin.ModelAdmin):
     list_display = ("nombre", "votacion", "votos")
     list_filter = ("votacion",)
     search_fields = ("nombre",)
-    
+
+
+@admin.register(Voto)
+class VotoAdmin(admin.ModelAdmin):
+    """CP-08: consulta de los votos registrados (solo lectura para no alterar resultados)."""
+    list_display = ("usuario", "edicion", "categoria", "opcion", "fecha_voto")
+    list_filter = ("edicion", "categoria")
+    search_fields = ("usuario__username", "opcion__nombre")
+    date_hierarchy = "fecha_voto"
+    readonly_fields = ("usuario", "edicion", "categoria", "opcion", "fecha_voto")
+
+    def has_add_permission(self, request):
+        return False

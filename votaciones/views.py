@@ -174,6 +174,16 @@ def votar(request, categoria_id):
         messages.success(request, f"¡Voto registrado para «{opcion.nombre}»!")
     return destino
 
+@login_required
+def mis_votos(request):
+    """CP-07: categorías en las que el usuario autenticado ya votó."""
+    votos = (
+        Voto.objects.filter(usuario=request.user)
+        .select_related("edicion", "categoria", "opcion__votacion")
+    )
+    return render(request, "votaciones/mis_votos.html", {"votos": votos})
+
+
 @require_GET
 def api_categorias(request):
     """GET /api/categorias/ -> categorías con sus opciones, leídas desde MySQL."""

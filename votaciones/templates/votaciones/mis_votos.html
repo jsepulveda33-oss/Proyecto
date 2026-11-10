@@ -1,0 +1,25 @@
+{% extends "votaciones/base.html" %}
+{% block titulo %}Mis votos{% endblock %}
+{% block contenido %}
+
+<section class="panel">
+  <h1 class="titulo-pagina">Mis votos</h1>
+  <p class="subtitulo">Categorías en las que ya participaste, {{ user.username }}.</p>
+</section>
+
+<div class="rejilla">
+  {% for v in votos %}
+    <a class="tarjeta" href="{% url 'votacion_detalle' v.opcion.votacion_id %}">
+      <span class="inicial">{{ forloop.counter }}</span>
+      <span class="tarjeta__cuerpo">
+        <strong>{{ v.categoria.nombre }}</strong>
+        <small>{{ v.edicion }} · Votaste por: {{ v.opcion.nombre }}</small>
+        <small>{{ v.fecha_voto|date:"d/m/Y H:i" }}</small>
+      </span>
+    </a>
+  {% empty %}
+    <p class="vacio">Aún no has votado en ninguna categoría.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

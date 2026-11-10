@@ -11,5 +11,6 @@ urlpatterns = [
     path("categorias/<int:categoria_id>/", views.detalle_categoria, name="categoria_detalle"),
     path("votaciones/<int:votacion_id>/", views.detalle_votacion, name="votacion_detalle"),
     path("categorias/<int:categoria_id>/votar/", views.votar, name="votar"),
+    path("mis-votos/", views.mis_votos, name="mis_votos"),
 
 ]

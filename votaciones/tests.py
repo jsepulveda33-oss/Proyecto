@@ -148,3 +148,15 @@ class NucleoVotoTests(TestCase):
             with transaction.atomic():
                 Voto.objects.create(**kwargs)
         self.assertEqual(Voto.objects.count(), 1)
+    def test_cp07_mis_votos_lista_categorias_votadas(self):
+        self.client.post(self.url1, {"opcion": self.op1.pk})
+        r = self.client.get(reverse("mis_votos"))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "Cat 1")
+        self.assertContains(r, "A")
+        self.assertNotContains(r, "Cat 2")
+
+    def test_cp07_mis_votos_requiere_login(self):
+        r = Client().get(reverse("mis_votos"))
+        self.assertEqual(r.status_code, 302)
+        self.assertIn("login", r.url)

@@ -58,6 +58,9 @@
       <div class="subnav-interior">
         <a href="{% url 'inicio' %}"{% if pagina == 'inicio' %} class="activa" aria-current="page"{% endif %}>Inicio</a>
         <a href="{% url 'ediciones' %}"{% if pagina == 'ediciones' or pagina == 'edicion_detalle' or pagina == 'categoria_detalle' or pagina == 'votacion_detalle' %} class="activa"{% endif %}>Ediciones</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'mis_votos' %}"{% if pagina == 'mis_votos' %} class="activa" aria-current="page"{% endif %}>Mis votos</a>
+        {% endif %}
       </div>
     </nav>
     {% endwith %}
